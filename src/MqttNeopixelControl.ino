@@ -129,17 +129,11 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
 
   _lastMQTTMessage = __incoming + " " + __payloadString;
 
-  if (__incoming == "cmnd/neo/r")
+  if (__incoming == "cmnd/neo/hex")
   {
-    r = __payloadString.toInt();
-  }
-  if (__incoming == "cmnd/neo/g")
-  {
-    g = __payloadString.toInt();
-  }
-  if (__incoming == "cmnd/neo/b")
-  {
-    b = __payloadString.toInt();
+    r = strtoul(__payloadString.substring(0, 2).c_str(), NULL, 16);
+    g = strtoul(__payloadString.substring(2, 4).c_str(), NULL, 16);
+    b = strtoul(__payloadString.substring(4).c_str(), NULL, 16);
   }
 }
 
@@ -241,7 +235,7 @@ void loop()
   _mqttClient.loop();
 
   colorWipe(strip.Color(r, g, b), 50);
-  delay(2000);
+  delay(500);
 }
 
 // Fill the dots one after the other with a color
