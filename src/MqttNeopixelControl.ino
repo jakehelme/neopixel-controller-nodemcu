@@ -20,6 +20,8 @@
 #define MQTT_MAX_PACKET_SIZE 256
 
 const char *mqtt_server = "192.168.1.2";
+const char *will_topic = "tele/neo/dead";
+const char *will_payload = "0";
 
 WiFiClient espClient;
 PubSubClient _mqttClient(espClient);
@@ -59,7 +61,7 @@ void mqttReconnect()
   int __retryCount = 0;
   while (!_mqttClient.connected() && __retryCount < 3)
   {
-    if (_mqttClient.connect(__clientId.c_str()))
+    if (_mqttClient.connect(__clientId.c_str(), will_topic, 1, false, will_payload))
     {
       DEBUG_PRINTLN("MQTT: Connected");
 
@@ -199,7 +201,7 @@ void setup()
     ESP.reset();
     delay(1000);
   }
-  DEBUG_PRINTLN("Got here poes");
+  
   randomSeed(micros());
 
   DEBUG_PRINTLN("Attempting MQTT connection...");
